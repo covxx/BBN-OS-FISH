@@ -184,6 +184,31 @@ mountImageFile() {
   fi
 }
 
+# Grow an existing full image so a resume can finish after the 16G root fills up.
+# Safe to call only while the image is not mounted.
+growImageFile() {
+  imageFile=$1
+  target=$2
+  current=$(stat -c %s "$imageFile")
+  if [ "$current" -ge "$target" ]; then
+    return 0
+  fi
+
+  log "Growing $imageFile to $target bytes so the install has room"
+  truncate -s "$target" "$imageFile"
+  partQty=$(fdisk -l "$imageFile" | grep -c "^${imageFile}")
+  if [ "$partQty" -lt 1 ]; then
+    partQty=2
+  fi
+  parted "$imageFile" --script "resizepart $partQty 100%"
+  loopId=$(kpartx -sav "$imageFile" | cut -d" " -f3 | grep -oh '[0-9]*' | head -n 1)
+  sleep 2
+  e2fsck -y -f /dev/mapper/loop"${loopId}"p"$partQty"
+  resize2fs /dev/mapper/loop"${loopId}"p"$partQty"
+  sync
+  kpartx -d "$imageFile" || true
+}
+
 inflateImage() {
   thisArch=$1
   imageLocation=$2
@@ -197,8 +222,8 @@ inflateImage() {
       log "truncate image to 9.2G"
       truncate -s "9216M" "$imageLocationInflated"
     else
-      log "truncate image to 16G"
-      truncate -s "16G" "$imageLocationInflated"
+      log "truncate image to 20G"
+      truncate -s "20G" "$imageLocationInflated"
     fi
 
     log "resize last partition to 100%"

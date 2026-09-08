@@ -62,6 +62,11 @@ cd "$(dirname "$0")"
     date -Iseconds > "$progress"
   fi
 
+  # Full images were 16G and run out while unpacking Arduino. Grow before remount.
+  if [ "$BBN_KIND" != "LITE" ]; then
+    growImageFile "$workImage" $((20 * 1024 * 1024 * 1024))
+  fi
+
   # Mount the image and make the binds required to chroot.
   mountImageFile $thisArch "$workImage"
 
