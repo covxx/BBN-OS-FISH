@@ -30,6 +30,7 @@ rm -f /usr/local/share/noaa-apt/test/test*.wav
 apt-get -y install libaudiofile-dev
 mdir=$(pwd)
 cd /usr/local/share
+rm -rf inmarsatc stdcdec
 git clone --depth=1 https://github.com/cropinghigh/inmarsatc
 git clone --depth=1 https://github.com/cropinghigh/stdcdec
 rm -rf inmarsatc/.git
@@ -129,6 +130,7 @@ apt-get install -y --no-install-recommends --no-install-suggests \
   cmake libasound-dev libpulse-dev automake autoconf m4
 
 pushd /usr/local/share
+  rm -rf aisdecoder
   git clone --depth=1 https://github.com/bareboat-necessities/aisdecoder
   cd aisdecoder
   rm -rf .git/
@@ -148,6 +150,7 @@ install -v -m 0644 "$FILE_FOLDER"/propagation.html "/usr/local/share/hf-propagat
 install -v "$FILE_FOLDER"/propagation.desktop "/usr/local/share/applications/"
 
 
+rm -rf rtl-ais
 git clone --depth=1 https://github.com/globecen/rtl-ais
 cd rtl-ais
 make -j 5
@@ -155,6 +158,7 @@ cp rtl_ais /usr/bin/
 cd ..
 rm -rf rtl-ais
 
+rm -rf kalibrate-rtl
 git clone --depth=1 https://github.com/steve-m/kalibrate-rtl
 cd kalibrate-rtl/
 ./bootstrap && CXXFLAGS='-W -Wall -O3' ./configure && make -j 5
