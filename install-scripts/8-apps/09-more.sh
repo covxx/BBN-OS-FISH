@@ -139,7 +139,7 @@ install -v "$FILE_FOLDER"/vessel-data.desktop "/usr/local/share/applications/"
 
 if [ "$LMARCH" == 'arm64' ]; then
   wget https://github.com/rclone/rclone/releases/download/v1.65.0/rclone-v1.65.0-linux-arm64.deb
-  dpkg -i rclone-v1.65.0-linux-arm64.deb
+  apt-get -y -q install ./rclone-v1.65.0-linux-arm64.deb
   rm rclone-v1.65.0-linux-arm64.deb
 fi
 

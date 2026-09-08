@@ -58,6 +58,8 @@ cd "$(dirname "$0")"
   mkdir -p $mkRoot/run/shm
   mount -o bind /etc/resolv.conf $mkRoot/etc/resolv.conf
   mount -o bind /dev $mkRoot/dev
+  mkdir -p $mkRoot/dev/pts
+  mount -t devpts devpts $mkRoot/dev/pts || true
   mount -o bind /sys $mkRoot/sys
   mount -o bind /proc $mkRoot/proc
   mount -o bind /tmp $mkRoot/tmp

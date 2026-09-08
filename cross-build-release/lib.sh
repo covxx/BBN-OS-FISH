@@ -72,6 +72,7 @@ umountImageFile() {
   rm -rf "$rootfs"/tmp/*
 
   umount "$rootfs"/etc/resolv.conf
+  umount "$rootfs"/dev/pts || true
   umount "$rootfs"/dev
   umount "$rootfs"/sys
   umount "$rootfs"/proc
@@ -113,7 +114,9 @@ inflateImage() {
 
     e2fsck -y -f /dev/mapper/loop"${loopId}"p"$partQty"
     resize2fs /dev/mapper/loop"${loopId}"p"$partQty"
-    kpartx -d "$imageLocationInflated"
+    sync
+    sleep 2
+    kpartx -d "$imageLocationInflated" || true
   else
     log "Using Ready to build image from cache"
   fi

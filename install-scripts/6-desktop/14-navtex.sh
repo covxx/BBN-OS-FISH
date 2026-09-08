@@ -6,4 +6,4 @@ if [ "$LMARCH" == 'arm64' ]; then
   wget https://github.com/bareboat-necessities/lysmarine_gen/releases/download/vTest/pc-navtex_1.0.0.1_arm64.deb -O pc-navtex.deb
 fi
 
-dpkg -i pc-navtex.deb && rm -f pc-navtex.deb
+apt-get -y -q install ./pc-navtex.deb && rm -f pc-navtex.deb

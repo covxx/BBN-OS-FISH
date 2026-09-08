@@ -11,13 +11,13 @@ rm -rf /var/cache/apt/archives/*
 rm -rf ~/.cache/pip
 
 xargs -n 1 -P 4 wget -q << EOF
-https://repo.jellyfin.org/files/server/debian/latest-stable/arm64/jellyfin-server_10.10.7%2Bdeb12_arm64.deb
-https://repo.jellyfin.org/files/server/debian/latest-stable/arm64/jellyfin_10.10.7%2Bdeb12_all.deb
-https://repo.jellyfin.org/files/server/debian/latest-stable/arm64/jellyfin-web_10.10.7%2Bdeb12_all.deb
-https://repo.jellyfin.org/files/ffmpeg/debian/latest-7.x/arm64/jellyfin-ffmpeg7_7.1.1-3-bookworm_arm64.deb
+https://repo.jellyfin.org/files/server/debian/latest-stable/arm64/jellyfin-server_10.11.11%2Bdeb12_arm64.deb
+https://repo.jellyfin.org/files/server/debian/latest-stable/arm64/jellyfin_10.11.11%2Bdeb12_all.deb
+https://repo.jellyfin.org/files/server/debian/latest-stable/arm64/jellyfin-web_10.11.11%2Bdeb12_all.deb
+https://repo.jellyfin.org/files/ffmpeg/debian/latest-7.x/arm64/jellyfin-ffmpeg7_7.1.4-3-bookworm_arm64.deb
 EOF
 
-dpkg -i jellyfin*.deb
+apt-get -y -q install ./jellyfin*.deb
 rm -rf jellyfin*.deb
 
 adduser jellyfin audio

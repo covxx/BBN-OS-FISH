@@ -6,7 +6,7 @@ if [ "$LMARCH" == 'arm64' ]; then
   wget https://github.com/bareboat-necessities/apm_planner_4rpi/releases/download/v2.0.29-rc1-36-g1fba2b8fc/apmplanner2_2.0.30-11-ge4ff0173d_arm64.deb -O apmplanner2.deb
 fi
 
-dpkg -i apmplanner2.deb && rm -f apmplanner2.deb
+apt-get -y -q install ./apmplanner2.deb && rm -f apmplanner2.deb
 
 bash -c 'cat << EOF > /usr/local/share/applications/apmplanner2.desktop
 [Desktop Entry]

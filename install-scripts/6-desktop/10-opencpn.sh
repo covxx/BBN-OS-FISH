@@ -81,7 +81,7 @@ https://raw.githubusercontent.com/OpenCPN/plugins/master/ocpn-plugins.xml
 EOF
 mv -f ocpn-plugins.xml /home/user/.opencpn/
 chown user:user /home/user/.opencpn/ocpn-plugins.xml
-dpkg -i opencpn*5.10.*.deb
+apt-get -y -q install ./opencpn*5.10.*.deb
 rm opencpn*5.10.*.deb
 rm /etc/apt/sources.list.d/opencpn.list
 

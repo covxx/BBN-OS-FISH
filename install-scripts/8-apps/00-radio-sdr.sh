@@ -175,7 +175,7 @@ xargs -n 1 -P 2 wget --user-agent="$AGENT" -q << EOF
 https://www.free-x.de/deb4op/pool/main/a/ais-catcher-webassets/ais-catcher-webassets_20240817_all.deb
 https://www.free-x.de/deb4op/pool/main/a/ais-catcher/ais-catcher_0.6.2-deb12u1_arm64.deb
 EOF
-dpkg -i ais-catcher_*.deb ais-catcher-webassets_*.deb
+apt-get -y -q install ./ais-catcher_*.deb ./ais-catcher-webassets_*.deb
 rm -rf ais-catcher*.deb
 
 
@@ -212,7 +212,7 @@ install -v "$FILE_FOLDER"/previsat.desktop /usr/local/share/applications/
 
 if [ "$LMARCH" == 'arm64' ]; then
   wget https://github.com/bareboat-necessities/lysmarine_gen/releases/download/vTest/hamfax_0.8.1.1-1_arm64.deb
-  dpkg -i hamfax_0.8.1.1-1_arm64.deb
+  apt-get -y -q install ./hamfax_0.8.1.1-1_arm64.deb
   rm hamfax_0.8.1.1-1_arm64.deb
 fi
 

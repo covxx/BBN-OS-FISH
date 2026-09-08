@@ -67,8 +67,8 @@ install -m 644 "$FILE_FOLDER"/signalk.service "/etc/systemd/system/signalk.servi
 
 ## Install signalK
 npm cache clean --force
-npm install -g npm pnpm patch-package typescript node-gyp
-npm install -g --unsafe-perm --production signalk-server@2.13.5
+npm install -g npm@10.9.2 pnpm@10.15.1 patch-package typescript node-gyp
+npm install -g --omit=dev signalk-server@2.13.5
 
 
 # pnpm approve-builds needed to fix
@@ -82,6 +82,8 @@ npm install -g --unsafe-perm --production signalk-server@2.13.5
 if [ "$BBN_KIND" == "LITE" ] ; then
   ## Install signalK published plugins
   pushd /home/signalk/.signalk
+    printf '%s\n' 'blockExoticSubdeps: false' > pnpm-workspace.yaml
+    chown signalk:signalk pnpm-workspace.yaml
     su signalk --shell=/bin/bash -c "export MAKEFLAGS='-j 8'; \
                  export NODE_ENV=production;
                  pnpm install \
@@ -106,12 +108,14 @@ if [ "$BBN_KIND" == "LITE" ] ; then
                  xdr-parser-plugin \
                  signalk-path-filter \
                  signalk-datetime \
-                 @meri-imperiumi/signalk-autostate --unsafe-perm --loglevel error; \
+                 @meri-imperiumi/signalk-autostate --loglevel error; \
                  ( echo a; sleep 1; echo y ) | pnpm approve-builds"
   popd
 else
   ## Install signalK published plugins
   pushd /home/signalk/.signalk
+    printf '%s\n' 'blockExoticSubdeps: false' > pnpm-workspace.yaml
+    chown signalk:signalk pnpm-workspace.yaml
     su signalk --shell=/bin/bash -c "export MAKEFLAGS='-j 8'; \
                  export NODE_ENV=production; \
                  pnpm install \
@@ -197,7 +201,7 @@ else
                  signalk-navtex-plugin \
                  @meri-imperiumi/signalk-autostate \
                  @meri-imperiumi/signalk-alternator-engine-on \
-                 signalk-saillogger --unsafe-perm --loglevel error; \
+                 signalk-saillogger --loglevel error; \
                  ( echo a; sleep 1; echo y ) | pnpm approve-builds"
   popd
 fi

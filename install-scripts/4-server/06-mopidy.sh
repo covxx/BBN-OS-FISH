@@ -30,7 +30,11 @@ sh -c 'echo "mopidy ALL=NOPASSWD: /usr/local/lib/python3.11/dist-packages/mopidy
 
 pip3 install yt-dlp
 pip3 install --upgrade requests
-pip3 install --upgrade https://github.com/natumbri/mopidy-youtube/archive/develop.zip
+for attempt in 1 2 3 4 5; do
+  pip3 install --timeout 120 --retries 5 --upgrade https://github.com/natumbri/mopidy-youtube/archive/develop.zip && break
+  echo "mopidy-youtube download failed, retry $attempt" >&2
+  sleep 15
+done
 
 pip3 install "ytmusicapi==0.22.0"
 
