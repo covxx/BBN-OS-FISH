@@ -38,12 +38,12 @@ install -m 0644 -v "$FILE_FOLDER"/50-lysmarine.pref "/etc/apt/preferences.d/"
 #apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 684A14CF2582E0C5           # Influx
 #apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 04EE7237B7D453EC           # debian backports (stretch)
 #apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 648ACFD622F3D138           # debian backports (buster)
-apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 24A4598E769C8C51           # bbn PPAs on launchpad
-apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 67E4A52AC865EB40           # Opencpn
-apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6AF0E1940624A220           # Opencpn
-apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 868273EDCE9979E7           # lysmarine (provide: createap, rtl-ais, fbpanel)
-apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6EA1BC913BC5163F           # Chirp
-apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 1932F485C68D72A5           # Stellarium
+apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 24A4598E769C8C51           # bbn PPAs on launchpad
+apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 67E4A52AC865EB40           # Opencpn
+apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 6AF0E1940624A220           # Opencpn
+apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 868273EDCE9979E7           # lysmarine (provide: createap, rtl-ais, fbpanel)
+apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 6EA1BC913BC5163F           # Chirp
+apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 1932F485C68D72A5           # Stellarium
 
 mkdir -p /etc/apt/keyrings
 curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
@@ -53,7 +53,7 @@ curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dea
 wget -q -O - https://repos.influxdata.com/influxdb.key | apt-key add -
 wget -q -O - https://repo.jellyfin.org/jellyfin_team.gpg.key | apt-key add -
 curl -sSL https://dtcooper.github.io/raspotify/key.asc | apt-key add -
-curl -1sLf https://repo.mosquitto.org/debian/mosquitto-repo.gpg.key | apt-key add - # Mosquitto
+wget -q https://repo.mosquitto.org/debian/mosquitto-repo.gpg -O /etc/apt/trusted.gpg.d/mosquitto-repo.gpg
 curl -1sLf https://dl.cloudsmith.io/public/bbn-projects/bbn-autoadb/gpg.A63E85DF4575A096.key | apt-key add -
 curl -1sLf https://dl.cloudsmith.io/public/bbn-projects/bbn-gpsd/gpg.B3336FAFD344E1C5.key | apt-key add -
 
@@ -79,9 +79,9 @@ echo '393e8779c89ac8d958f81f942f9ad7fb82a25e133faddaf92e15b16e6ac9ce4c influxdat
 echo 'deb [signed-by=/etc/apt/trusted.gpg.d/influxdata-archive_compat.gpg] https://repos.influxdata.com/debian stable main' | tee /etc/apt/sources.list.d/influxdata.list
 rm influxdata-archive_compat.key
 
-wget https://www.flightaware.com/adsb/piaware/files/packages/pool/piaware/f/flightaware-apt-repository/flightaware-apt-repository_1.2_all.deb
-dpkg -i flightaware-apt-repository_1.2_all.deb
-rm -f flightaware-apt-repository_1.2_all.deb
+wget https://www.flightaware.com/adsb/piaware/files/packages/pool/piaware/f/flightaware-apt-repository/flightaware-apt-repository_1.3_all.deb
+dpkg -i flightaware-apt-repository_1.3_all.deb
+rm -f flightaware-apt-repository_1.3_all.deb
 
 ## Update && Upgrade
 apt-get update  -y -q
