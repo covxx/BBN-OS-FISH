@@ -9,7 +9,9 @@ apt-get install -y ffmpeg libsdl2-2.0-0 adb \
 
 
 apt-get install -y libsdl2-dev libavcodec-dev libavdevice-dev libavformat-dev libusb-1.0-0-dev
-git clone --depth=1 https://github.com/Genymobile/scrcpy
+# v4.0+ needs SDL3, which Bookworm does not ship. v3.3.4 is the last SDL2 release.
+rm -rf scrcpy
+git clone --depth=1 --branch v3.3.4 https://github.com/Genymobile/scrcpy
 cd scrcpy
 sed -i -e 's/sudo//g' install_release.sh
 ./install_release.sh
