@@ -124,6 +124,11 @@ function addLysmarineScripts() {
   rootfs=./work/${thisArch}/rootfs
   log "copying lysmarine on the image"
   ls "$rootfs"
-  cp -r ./install-scripts "${rootfs}"/
+  if [ -d ./install-scripts ]; then
+    scriptSrc=./install-scripts
+  else
+    scriptSrc=../install-scripts
+  fi
+  cp -r "$scriptSrc" "${rootfs}"/
   chmod 0775 "${rootfs}"/install-scripts/install.sh
 }

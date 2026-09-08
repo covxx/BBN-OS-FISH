@@ -1,6 +1,7 @@
 #!/bin/bash -xe
+cd "$(dirname "$0")"
 {
-  source lib.sh
+  source ./lib.sh
 
   MY_CPU_ARCH=$1
   LYSMARINE_VER=$2
