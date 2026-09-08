@@ -5,6 +5,7 @@ module.exports = {
     {name: 'instruments', title: 'Instruments', img: 'dashboard', bg: 'SeaGreen',  cmd: 'gtk-launch', args: ['boatinstrument']},
     {name: 'autopilot', title: 'Autopilot', img: 'autopilot', bg: 'IndianRed', cmd: '/opt/sk-autopilot/sk-autopilot', args: []},
     {name: 'weather', title: 'Weather', img: 'weather', bg: 'RoyalBlue', cmd: 'onlyone', args: ['XyGrib']},
+    {name: 'alerts', title: 'Alerts', img: 'weather', bg: 'SteelBlue', cmd: 'onlyone', args: ['gnome-www-browser', 'http://127.0.0.1:8765/weather']},
     {name: 'cam', title: 'Camera', img: 'camera', bg: 'SeaGreen', cmd: '/opt/motioneye/motioneye', args: []},
 
     {name: 'avnav', title: 'AvNav', img: 'chart', bg: 'Olive', cmd: '/opt/AvNav/AvNav', args: []},
@@ -34,6 +35,8 @@ module.exports = {
     {name: 'files', title: 'Files', img: 'folder', bg: 'ForestGreen', cmd: 'onlyone', args: ['thunar']},
 
     {name: 'power', title: 'Power', img: 'solar', bg: 'Tan', cmd: 'gtk-launch', args: ['victron']},
+    {name: 'batteries', title: 'Batteries', img: 'solar', bg: 'DarkSeaGreen', cmd: 'onlyone', args: ['gnome-www-browser', 'http://127.0.0.1:8765/power']},
+    {name: 'link', title: 'Link', img: 'internet', bg: 'SteelBlue', cmd: 'onlyone', args: ['gnome-www-browser', 'http://127.0.0.1:8765/network']},
     {name: 'drone', title: 'Drones', img: 'drone', bg: 'SaddleBrown', cmd: 'onlyone', args: ['apmplanner2']},
     {name: 'webcam', title: 'Web Cam', img: 'camera', bg: 'SeaGreen', cmd: 'onlyone', args: ['webcamoid']},
     {name: 'messenger', title: 'Messenger', img: 'email', bg: 'RoyalBlue', cmd: '/opt/WA-Web-Msg/WA-Web-Msg', args: []},

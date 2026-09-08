@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Weather</title>
+  <link rel="stylesheet" href="fishing.css">
+</head>
+<body>
+  <nav class="nav">
+    <a href="/">Fishing</a>
+    <a href="/weather">Weather</a>
+    <a href="/power">Power</a>
+    <a href="/network">Link</a>
+  </nav>
+  <div id="alarm" class="banner">WEATHER ALERT</div>
+  <section class="card">
+    <div class="label">NWS radar</div>
+    <img id="radar" class="radar" alt="No radar yet">
+    <div id="radarNote" class="hint">Waiting for GPS</div>
+  </section>
+  <section class="card">
+    <div class="label">Active alerts</div>
+    <div id="alerts" class="hint">None</div>
+  </section>
+  <section class="card">
+    <div class="label">Forecast wind</div>
+    <div id="forecastWind" class="row"><span>Forecast</span><span>--</span></div>
+    <div class="label">Measured wind</div>
+    <div class="row"><span id="measuredLabel">Measured</span><span id="measured">not connected</span></div>
+    <div id="baro" class="hint">Barometer waiting</div>
+  </section>
+  <section class="card">
+    <div class="label">Forecast</div>
+    <div id="forecast"></div>
+  </section>
+  <section class="card">
+    <div class="label">Optional OpenWeather key</div>
+    <div class="mark">
+      <input id="wxKey" type="text" placeholder="Leave empty to use NWS only" autocomplete="off">
+      <button id="saveWx" type="button">Save</button>
+    </div>
+    <div id="wxState" class="hint">NWS does not need a key. This only enables the Signal K plugin.</div>
+  </section>
+  <script>
+    function paint(state) {
+      const wx = state.weather || {};
+      const alarm = document.getElementById("alarm");
+      alarm.className = (wx.alerts && wx.alerts.length) || state.baroFalling ? "banner show" : "banner";
+      alarm.textContent = state.baroFalling ? "PRESSURE FALLING" : "WEATHER ALERT";
+      document.getElementById("radarNote").textContent = wx.status + (wx.radarMode === "still" ? " — still radar, cell link" : "");
+      const img = document.getElementById("radar");
+      if (wx.radarStation && wx.status === "live") {
+        img.src = "/api/radar?t=" + Date.now();
+      }
+      const alerts = document.getElementById("alerts");
+      alerts.innerHTML = "";
+      if (!wx.alerts || !wx.alerts.length) {
+        alerts.textContent = wx.status === "no GPS" ? "No GPS, alerts not placed" : "No active alerts";
+      } else {
+        wx.alerts.forEach(function (item) {
+          const div = document.createElement("div");
+          div.className = "alert";
+          div.textContent = item.headline + (item.expires ? " until " + item.expires : "");
+          alerts.appendChild(div);
+        });
+      }
+      document.getElementById("forecastWind").lastElementChild.textContent = wx.forecastWind || "--";
+      document.getElementById("measuredLabel").textContent = state.windLabel === "measured" ? "Measured" : "Measured";
+      document.getElementById("measured").textContent = state.windLabel === "measured" ? state.windMeasuredKn + " kn" : "not connected";
+      document.getElementById("baro").textContent = state.baroFalling
+        ? "Pressure falling"
+        : (state.pressureHpa === null ? "No onboard barometer" : state.pressureHpa + " hPa");
+      const box = document.getElementById("forecast");
+      box.innerHTML = "";
+      (wx.forecast || []).forEach(function (period) {
+        const div = document.createElement("div");
+        div.className = "row";
+        div.innerHTML = "<span>" + period.name + "</span><span>" + period.text + " " + period.wind + "</span>";
+        box.appendChild(div);
+      });
+    }
+    function tick() {
+      fetch("/api/state").then(function (r) { return r.json(); }).then(paint);
+    }
+    fetch("/api/settings").then(function (r) { return r.json(); }).then(function (s) {
+      document.getElementById("wxKey").value = s.openweatherKey || "";
+    });
+    document.getElementById("saveWx").addEventListener("click", function () {
+      fetch("/api/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ openweatherKey: document.getElementById("wxKey").value })
+      }).then(function () {
+        document.getElementById("wxState").textContent = "Saved. Empty key keeps OpenWeather off.";
+      });
+    });
+    tick();
+    setInterval(tick, 5000);
+  </script>
+</body>
+</html>

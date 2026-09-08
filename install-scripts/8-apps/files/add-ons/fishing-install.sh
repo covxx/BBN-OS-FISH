@@ -12,6 +12,9 @@ fi
 systemctl enable bbn-fishing.service
 systemctl restart bbn-fishing.service
 echo "Fishing page: http://127.0.0.1:8765/"
+echo "Weather: http://127.0.0.1:8765/weather"
+echo "Power: http://127.0.0.1:8765/power"
+echo "Link: http://127.0.0.1:8765/network"
 echo "Shallow alarm stays off until you turn it on and confirm transducer offset."
 echo "Fish finder NMEA is disabled until: sudo bbn-bind-nmea fish /dev/ttyUSB0"
 echo "Wind NMEA is disabled until: sudo bbn-bind-nmea wind /dev/ttyUSB1"

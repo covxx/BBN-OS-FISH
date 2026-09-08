@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Power</title>
+  <link rel="stylesheet" href="fishing.css">
+</head>
+<body>
+  <nav class="nav">
+    <a href="/">Fishing</a>
+    <a href="/weather">Weather</a>
+    <a href="/power">Power</a>
+    <a href="/network">Link</a>
+  </nav>
+  <section class="card">
+    <div class="label">House / nav battery</div>
+    <div class="row"><span>Volts</span><span id="volts">not connected</span></div>
+    <div class="row"><span>Amps</span><span id="amps">not connected</span></div>
+    <div class="row"><span>Solar</span><span id="solar">not connected</span></div>
+    <div id="solarHint" class="hint"></div>
+  </section>
+  <section class="card">
+    <div class="label">Boat 12 V</div>
+    <div class="row"><span>Volts</span><span id="boat">not connected</span></div>
+    <div class="hint">Shown only after a second battery path exists. Victron setup stays on the Power tile.</div>
+  </section>
+  <section class="card">
+    <div class="label">INA219 shunt fallback</div>
+    <button id="shunt" class="warn" type="button">Shunt off</button>
+    <div class="hint">Leave this off until the chip is wired. It is for the nav battery, not starter inrush.</div>
+  </section>
+  <script>
+    let settings = {};
+    function show(state) {
+      document.getElementById("volts").textContent = state.houseV === null ? "not connected" : state.houseV + " V";
+      document.getElementById("amps").textContent = state.houseA === null ? "not connected" : state.houseA + " A";
+      document.getElementById("solar").textContent = state.solarW === null ? "not connected" : state.solarW + " W";
+      document.getElementById("solarHint").textContent = state.solarHint || "";
+      document.getElementById("boat").textContent = state.boatV === null ? "not connected" : state.boatV + " V";
+    }
+    fetch("/api/settings").then(function (r) { return r.json(); }).then(function (s) {
+      settings = s;
+      document.getElementById("shunt").textContent = s.ina219Enabled ? "Shunt on" : "Shunt off";
+    });
+    document.getElementById("shunt").addEventListener("click", function () {
+      settings.ina219Enabled = !settings.ina219Enabled;
+      document.getElementById("shunt").textContent = settings.ina219Enabled ? "Shunt on" : "Shunt off";
+      fetch("/api/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ina219Enabled: settings.ina219Enabled })
+      });
+    });
+    function tick() { fetch("/api/state").then(function (r) { return r.json(); }).then(show); }
+    tick();
+    setInterval(tick, 2000);
+  </script>
+</body>
+</html>

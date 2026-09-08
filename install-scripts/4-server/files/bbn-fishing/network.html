@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Link</title>
+  <link rel="stylesheet" href="fishing.css">
+</head>
+<body>
+  <nav class="nav">
+    <a href="/">Fishing</a>
+    <a href="/weather">Weather</a>
+    <a href="/power">Power</a>
+    <a href="/network">Link</a>
+  </nav>
+  <section class="card">
+    <div class="label">USB modem</div>
+    <div id="modem" class="depth" style="font-size:2rem">no modem</div>
+    <div class="hint">Signal is the stick, not a coverage map. APN setup stays in NetworkManager.</div>
+  </section>
+  <section class="card">
+    <div class="label">Wi-Fi</div>
+    <div id="wifi" class="row"><span>Active</span><span>not connected</span></div>
+  </section>
+  <script>
+    function show(state) {
+      const net = state.network || {};
+      document.getElementById("modem").textContent = net.modem || "no modem";
+      document.getElementById("wifi").lastElementChild.textContent = net.wifi || "not connected";
+    }
+    function tick() { fetch("/api/state").then(function (r) { return r.json(); }).then(show); }
+    tick();
+    setInterval(tick, 3000);
+  </script>
+</body>
+</html>

@@ -7,6 +7,12 @@
   <link rel="stylesheet" href="fishing.css">
 </head>
 <body>
+  <nav class="nav">
+    <a href="/">Fishing</a>
+    <a href="/weather">Weather</a>
+    <a href="/power">Power</a>
+    <a href="/network">Link</a>
+  </nav>
   <div id="alarm" class="banner">SHALLOW WATER</div>
   <div class="grid">
     <section class="card">
@@ -22,7 +28,7 @@
       <div class="row"><span>Lon</span><span id="lon">--</span></div>
       <div class="row"><span>Speed</span><span id="sog">-- kn</span></div>
       <div id="gpsState" class="hint">Waiting for GPS</div>
-      <div class="row"><span id="windLabel">Wind</span><span id="wind">not connected</span></div>
+      <div class="row"><span>Fish finder</span><span id="fishLink">not connected</span></div>
     </section>
   </div>
   <section class="card">
@@ -51,13 +57,11 @@
       <button id="alarmToggle" class="warn" type="button">Alarm off</button>
       <button id="saveSet" type="button">Save settings</button>
     </div>
-    <div class="hint">Leave the alarm off until the transducer offset matches this boat. 4 ft is a starting point, not a draft measurement.</div>
-  </section>
-  <section class="strip">
-    <div class="card"><div class="label">House volts</div><div class="row"><span id="volts">not connected</span></div></div>
-    <div class="card"><div class="label">House amps</div><div class="row"><span id="amps">not connected</span></div></div>
-    <div class="card"><div class="label">Solar watts</div><div class="row"><span id="solar">not connected</span></div></div>
-    <div class="card"><div class="label">Power</div><div class="hint">Victron is the primary path. A shunt fallback stays disabled until wired.</div></div>
+    <div class="row">
+      <span>Draft</span>
+      <span><input id="draftFt" type="number" min="0" max="8" step="0.1" value="2" style="width:5rem"> ft</span>
+    </div>
+    <div class="hint">Leave the alarm off until the transducer offset matches this boat. 4 ft is a starting point, not a draft measurement. Charts stay in OpenCPN.</div>
   </section>
   <script src="fishing.js"></script>
 </body>

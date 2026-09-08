@@ -61,7 +61,12 @@ if [[ -f "$settings" ]] && command -v jq >/dev/null; then
     )' "$settings" > "$tmp"
   install -m 644 -o signalk -g signalk "$tmp" "$settings"
   rm -f "$tmp"
-  echo "Enabled Signal K provider ${provider} at ${baud} baud. Restart Signal K to read the port."
+  echo "Enabled Signal K provider ${provider} at ${baud} baud."
 else
-  echo "Wrote ${rule}. Enable the ${provider} provider in Signal K and restart it."
+  echo "Wrote ${rule}. Enable the ${provider} provider in Signal K."
+fi
+
+if [[ -x /usr/local/sbin/signalk-restart ]]; then
+  /usr/local/sbin/signalk-restart || true
+  echo "Signal K restarted."
 fi

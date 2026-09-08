@@ -11,6 +11,17 @@
 
 * { box-sizing: border-box; }
 
+.nav { display: flex; gap: 8px; }
+.nav a {
+  color: var(--ink);
+  text-decoration: none;
+  background: var(--card);
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+.radar { width: 100%; max-height: 420px; object-fit: contain; background: #06141a; border-radius: 8px; }
+.alert { border-left: 6px solid var(--alarm); }
+
 html, body {
   margin: 0;
   height: 100%;

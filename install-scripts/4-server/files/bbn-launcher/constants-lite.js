@@ -5,6 +5,7 @@ module.exports = {
     {name: 'instruments', title: 'Instruments', img: 'dashboard', bg: 'SeaGreen',  cmd: 'gtk-launch', args: ['boatinstrument']},
     {name: 'pypilot', title: 'PyPilot', img: 'autopilot', bg: 'ForestGreen', cmd: '/opt/Pypilot_webapp/Pypilot_webapp', args: []},
     {name: 'weather', title: 'Weather', img: 'weather', bg: 'RoyalBlue', cmd: 'onlyone', args: ['XyGrib']},
+    {name: 'alerts', title: 'Alerts', img: 'weather', bg: 'SteelBlue', cmd: 'onlyone', args: ['gnome-www-browser', 'http://127.0.0.1:8765/weather']},
     {name: 'winds', title: 'Winds', img: 'race', bg: 'DarkSeaGreen', cmd: 'gtk-launch', args: ['windy']},
 
     {name: 'signalk', title: 'SignalK', img: 'dashboard', bg: 'ForestGreen', cmd: 'gtk-launch', args: ['signalk']},
@@ -14,6 +15,8 @@ module.exports = {
     {name: 't-storms', title: 'T-Storms', img: 'weather', bg: 'Tan', cmd: 'gtk-launch', args: ['lightningmaps']},
 
     {name: 'power', title: 'Power', img: 'solar', bg: 'Tan', cmd: 'gtk-launch', args: ['victron']},
+    {name: 'batteries', title: 'Batteries', img: 'solar', bg: 'DarkSeaGreen', cmd: 'onlyone', args: ['gnome-www-browser', 'http://127.0.0.1:8765/power']},
+    {name: 'link', title: 'Link', img: 'internet', bg: 'SteelBlue', cmd: 'onlyone', args: ['gnome-www-browser', 'http://127.0.0.1:8765/network']},
     {name: 'drone', title: 'Drones', img: 'drone', bg: 'SaddleBrown', cmd: 'onlyone', args: ['apmplanner2']},
     {name: 'terminal', title: 'Terminal', img: 'terminal', bg: 'RoyalBlue',  cmd: 'onlyone', args: ['lxterminal']},
     {name: 'www', title: 'WWW', img: 'internet', bg: 'SteelBlue', cmd: 'onlyone', args: ['gnome-www-browser']},

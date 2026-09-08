@@ -1,9 +1,14 @@
 #!/bin/bash -e
 
-# Fishing cockpit: touch page, NMEA bind helpers, chart marks, disabled sensor templates.
+# Fishing cockpit plus weather, power, and network helm pages.
+
+apt-get install -y -q modemmanager || true
 
 install -d -m 0755 /usr/local/share/bbn-fishing
 install -m 0644 "$FILE_FOLDER"/bbn-fishing/index.html /usr/local/share/bbn-fishing/
+install -m 0644 "$FILE_FOLDER"/bbn-fishing/weather.html /usr/local/share/bbn-fishing/
+install -m 0644 "$FILE_FOLDER"/bbn-fishing/power.html /usr/local/share/bbn-fishing/
+install -m 0644 "$FILE_FOLDER"/bbn-fishing/network.html /usr/local/share/bbn-fishing/
 install -m 0644 "$FILE_FOLDER"/bbn-fishing/fishing.js /usr/local/share/bbn-fishing/
 install -m 0644 "$FILE_FOLDER"/bbn-fishing/fishing.css /usr/local/share/bbn-fishing/
 install -m 0644 "$FILE_FOLDER"/bbn-fishing/settings.json /usr/local/share/bbn-fishing/
@@ -11,6 +16,8 @@ install -m 0755 "$FILE_FOLDER"/bbn-fishing/bbn-fishingd.py /usr/local/share/bbn-
 install -m 0755 "$FILE_FOLDER"/bbn-fishing/bbn-nmea-sim.py /usr/local/share/bbn-fishing/bbn-nmea-sim.py
 
 install -m 0755 "$FILE_FOLDER"/bbn-fishing/bbn-bind-nmea.sh /usr/local/sbin/bbn-bind-nmea
+install -m 0755 "$FILE_FOLDER"/bbn-fishing/bbn-helm-apply.sh /usr/local/sbin/bbn-helm-apply
+install -m 0440 "$FILE_FOLDER"/bbn-fishing/bbn-helm.sudoers /etc/sudoers.d/bbn-helm
 install -m 0755 "$FILE_FOLDER"/bbn-fishing/bbn-chart-kap.sh /usr/local/bin/bbn-chart-kap
 install -m 0755 "$FILE_FOLDER"/bbn-fishing/bbn-nmea-sim.sh /usr/local/bin/bbn-nmea-sim
 
