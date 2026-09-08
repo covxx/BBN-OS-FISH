@@ -30,6 +30,13 @@ export APT_LISTCHANGES_FRONTEND=none
 export NEEDRESTART_MODE=a
 export MAKEFLAGS="-j$(nproc)"
 
+# A slow QEMU clock makes current Release files look "not valid yet".
+mkdir -p /etc/apt/apt.conf.d
+cat > /etc/apt/apt.conf.d/99bbn-clock-skew <<'EOF'
+Acquire::Max-FutureTime "86400";
+Acquire::Check-Valid-Until "false";
+EOF
+
 # Completed stage scripts are recorded on the host via the stageCache bind-mount
 # so a failed build can resume instead of repeating apt/git work.
 stampDir=./stageCache/.bbn-done

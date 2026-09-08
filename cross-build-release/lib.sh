@@ -23,6 +23,38 @@ checkRoot() {
   fi
 }
 
+# QEMU guests often boot with a slow clock. apt then treats a current
+# Release file as "not valid yet" and refuses the update.
+syncHostClock() {
+  log "Checking build host clock"
+  header=""
+  if command -v curl >/dev/null 2>&1; then
+    header=$(curl -fsI --max-time 20 http://deb.debian.org/debian/ 2>/dev/null | awk -F': ' 'tolower($1)=="date"{print $2}' | tr -d '\r')
+  elif command -v wget >/dev/null 2>&1; then
+    header=$(wget -qS -O /dev/null --timeout=20 http://deb.debian.org/debian/ 2>&1 | awk -F': ' 'tolower($1) ~ /  *date/{print $2}' | tr -d '\r' | tail -n 1)
+  fi
+
+  if [ -n "$header" ]; then
+    now=$(date -u +%s)
+    remote=$(date -u -d "$header" +%s 2>/dev/null || true)
+    if [ -n "$remote" ]; then
+      skew=$((remote - now))
+      if [ "$skew" -lt 0 ]; then
+        abs=$((-skew))
+      else
+        abs=$skew
+      fi
+      if [ "$abs" -gt 30 ]; then
+        log "Host clock is ${skew}s off Debian. Setting clock from HTTP Date."
+        date -u -s "$header" || true
+        hwclock --systohc 2>/dev/null || true
+      fi
+    fi
+  fi
+
+  timedatectl set-ntp true >/dev/null 2>&1 || true
+}
+
 # True if anything is mounted on rootfs, or the mountpoint directory is not empty.
 rootfsBusy() {
   rootfs=$1

@@ -84,6 +84,15 @@ cd "$(dirname "$0")"
   mount -o bind /tmp $mkRoot/tmp
   mount --rbind $myCache/stageCache $mkRoot/install-scripts/stageCache
   mount --rbind /run/shm $mkRoot/run/shm
+
+  # The chroot shares this host clock. Step it before apt sees Release files.
+  syncHostClock
+  mkdir -p "$mkRoot/etc/apt/apt.conf.d"
+  cat > "$mkRoot/etc/apt/apt.conf.d/99bbn-clock-skew" <<'EOF'
+Acquire::Max-FutureTime "86400";
+Acquire::Check-Valid-Until "false";
+EOF
+
   chroot $mkRoot /bin/bash -xe <<EOF
     set -x; set -e; cd /install-scripts; export LMBUILD="raspios"; export BBN_KIND="$BBN_KIND"; ls; chmod +x *.sh; ./install.sh 0 2 4 6 8 a; exit
 EOF
