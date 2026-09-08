@@ -174,10 +174,11 @@ apt-get install -y librtlsdr0 libairspy0 libairspyhf1 \
 #unzip AIS-catcher.zip && rm AIS-catcher.zip
 #mv AIS-catcher /usr/local/bin/ && chmod +x /usr/local/bin/AIS-catcher
 
-# 0.6.2 was removed from the pool. Pick the current Bookworm arm64 package.
+# The pool hides files unless the client looks like apt. 0.6.2 is gone.
+AGENT="Debian APT-HTTP/1.3 (2.6.1)"
 aisDir="https://www.free-x.de/deb4op/pool/main/a/ais-catcher"
 webDir="https://www.free-x.de/deb4op/pool/main/a/ais-catcher-webassets"
-aisHtml=$(wget -O - "$aisDir/")
+aisHtml=$(wget --user-agent="$AGENT" -O - "$aisDir/")
 aisDeb=$(echo "$aisHtml" | grep -oE 'ais-catcher_[^"< ]*deb12[^"< ]*_arm64\.deb' | sort -V | tail -n 1)
 webDeb="ais-catcher-webassets_20240817_all.deb"
 if [ -z "$aisDeb" ]; then
@@ -185,8 +186,8 @@ if [ -z "$aisDeb" ]; then
   exit 1
 fi
 echo "Installing $aisDeb $webDeb"
-wget -O "$aisDeb" "$aisDir/$aisDeb"
-wget -O "$webDeb" "$webDir/$webDeb"
+wget --user-agent="$AGENT" -O "$aisDeb" "$aisDir/$aisDeb"
+wget --user-agent="$AGENT" -O "$webDeb" "$webDir/$webDeb"
 apt-get -y -q install ./"$aisDeb" ./"$webDeb"
 rm -f ./"$aisDeb" ./"$webDeb"
 
