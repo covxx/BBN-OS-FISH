@@ -31,11 +31,16 @@ export NEEDRESTART_MODE=a
 export MAKEFLAGS="-j$(nproc)"
 
 # A slow QEMU clock makes current Release files look "not valid yet".
-mkdir -p /etc/apt/apt.conf.d
+# Keep downloaded debs on the host /tmp bind so the image root does not fill up.
+mkdir -p /etc/apt/apt.conf.d /tmp/apt-archives
 cat > /etc/apt/apt.conf.d/99bbn-clock-skew <<'EOF'
 Acquire::Max-FutureTime "86400";
 Acquire::Check-Valid-Until "false";
+Dir::Cache::archives "/tmp/apt-archives/";
+APT::Keep-Downloaded-Packages "false";
 EOF
+apt-get clean || true
+rm -rf /var/cache/apt/archives/* /var/cache/apt/archives/partial || true
 
 # Completed stage scripts are recorded on the host via the stageCache bind-mount
 # so a failed build can resume instead of repeating apt/git work.

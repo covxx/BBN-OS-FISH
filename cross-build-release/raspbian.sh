@@ -87,11 +87,14 @@ cd "$(dirname "$0")"
 
   # The chroot shares this host clock. Step it before apt sees Release files.
   syncHostClock
-  mkdir -p "$mkRoot/etc/apt/apt.conf.d"
+  mkdir -p "$mkRoot/etc/apt/apt.conf.d" /tmp/apt-archives
   cat > "$mkRoot/etc/apt/apt.conf.d/99bbn-clock-skew" <<'EOF'
 Acquire::Max-FutureTime "86400";
 Acquire::Check-Valid-Until "false";
+Dir::Cache::archives "/tmp/apt-archives/";
+APT::Keep-Downloaded-Packages "false";
 EOF
+  rm -rf "$mkRoot/var/cache/apt/archives/"* || true
 
   chroot $mkRoot /bin/bash -xe <<EOF
     set -x; set -e; cd /install-scripts; export LMBUILD="raspios"; export BBN_KIND="$BBN_KIND"; ls; chmod +x *.sh; ./install.sh 0 2 4 6 8 a; exit

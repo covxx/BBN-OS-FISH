@@ -180,7 +180,7 @@ fi
 date --rfc-3339=seconds > /etc/bbn-build
 fake-hwclock save
 
-# Build-only: do not ship a guest that ignores Release dates.
+# Build-only: do not ship a guest that ignores Release dates or caches debs on /tmp.
 rm -f /etc/apt/apt.conf.d/99bbn-clock-skew
 
 mkdir -p /home/user/Music || true
