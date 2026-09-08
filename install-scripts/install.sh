@@ -25,6 +25,15 @@ export LC_NUMERIC="C"
 export LC_CTYPE="C"
 export LC_MESSAGES="C"
 export LC_ALL="C"
+export DEBIAN_FRONTEND=noninteractive
+export APT_LISTCHANGES_FRONTEND=none
+export NEEDRESTART_MODE=a
+export MAKEFLAGS="-j$(nproc)"
+
+# Completed stage scripts are recorded on the host via the stageCache bind-mount
+# so a failed build can resume instead of repeating apt/git work.
+stampDir=./stageCache/.bbn-done
+mkdir -p "$stampDir"
 
 ## If no build stage provided, build all stages.
 if [ "$#" -gt "0" ]; then
@@ -45,12 +54,19 @@ for argument in $argumentList; do # access each element of array
   set +f
   for scriptLocation in ./$stage*/$script*.sh; do
     if [ -f "$scriptLocation" ]; then
+      stamp="$stampDir/$(echo "$scriptLocation" | tr '/' '_')"
       echo "From request $argument "
+      if [ -f "$stamp" ]; then
+        echo "Skipping completed $scriptLocation"
+        continue
+      fi
       echo "Running stage $stage -> $script ( $scriptLocation )"
       export FILE_FOLDER=${scriptLocation%/*}/files/
       chmod +x "$scriptLocation"
-      $scriptLocation
-      [[ ${PIPESTATUS[0]} -ne 0 ]] && exit 255
+      if ! "$scriptLocation"; then
+        exit 255
+      fi
+      touch "$stamp"
     fi
   done
 done

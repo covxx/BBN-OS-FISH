@@ -23,6 +23,98 @@ checkRoot() {
   fi
 }
 
+# True if anything is mounted on rootfs, or the mountpoint directory is not empty.
+rootfsBusy() {
+  rootfs=$1
+  if mountpoint -q "$rootfs" 2>/dev/null; then
+    return 0
+  fi
+  [ -n "$(ls -A "$rootfs" 2>/dev/null)" ]
+}
+
+# Drop every mount under rootfs, then detach the image loop devices.
+# Never delete files through the mount: a broken ext4 returns "Bad message"
+# and, with set -e, that used to abort before umount ran.
+umountImageFile() {
+  log "un-Mounting"
+  thisArch=$1
+  imageFile=$2
+  rootfs=./work/${thisArch}/rootfs
+  absRoot=$(readlink -f "$rootfs")
+  absImage=$(readlink -f "$imageFile" 2>/dev/null || echo "$imageFile")
+
+  hadErrexit=0
+  case $- in *e*) hadErrexit=1 ;; esac
+  set +e
+
+  # Deepest mounts first so bind mounts (dev, proc, stageCache, ...) go away
+  # before the partition itself.
+  awk -v r="$absRoot" '
+    $2 == r || index($2, r "/") == 1 { print length($2), $2 }
+  ' /proc/mounts | sort -nr | while read -r _ mp; do
+    umount "$mp" || umount -l "$mp" || true
+  done
+
+  if mountpoint -q "$absRoot"; then
+    umount -R "$absRoot" || umount -Rl "$absRoot" || umount -l "$absRoot" || true
+  fi
+
+  kpartx -d "$absImage"
+  # Retry detach if the mapper devices were still busy after a lazy unmount.
+  for _try in 1 2 3; do
+    if ! losetup -j "$absImage" | grep -q .; then
+      break
+    fi
+    sleep 1
+    kpartx -d "$absImage"
+    losetup -j "$absImage" | while IFS= read -r line; do
+      dev=${line%%:*}
+      kpartx -d "$dev" || true
+      losetup -d "$dev" || true
+    done
+  done
+
+  # Host-side leftovers only. If this is still a mount, do not rm through it.
+  if ! mountpoint -q "$absRoot" && [ -n "$(ls -A "$absRoot" 2>/dev/null)" ]; then
+    find "$absRoot" -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+  fi
+
+  [ "$hadErrexit" = 1 ] && set -e
+
+  if rootfsBusy "$rootfs"; then
+    logErr "$rootfs is still busy. Leftover mounts:"
+    awk -v r="$absRoot" '$2 == r || index($2, r "/") == 1 { print }' /proc/mounts
+    return 1
+  fi
+  return 0
+}
+
+# Strip build leftovers from a healthy mounted image before packing.
+# stageCache is a host bind-mount; unmount it, do not delete it.
+pruneImageContents() {
+  thisArch=$1
+  rootfs=./work/${thisArch}/rootfs
+  mountpoint -q "$rootfs" || return 0
+
+  hadErrexit=0
+  case $- in *e*) hadErrexit=1 ;; esac
+  set +e
+
+  rm -rf "$rootfs/home/border"
+  if [ -d "$rootfs/install-scripts/logs" ]; then
+    find "$rootfs/install-scripts/logs" -mindepth 1 -delete
+  fi
+  if [ -d "$rootfs/var/log" ]; then
+    find "$rootfs/var/log" -type f -delete
+  fi
+  if [ -d "$rootfs/tmp" ]; then
+    find "$rootfs/tmp" -mindepth 1 -delete
+  fi
+
+  [ "$hadErrexit" = 1 ] && set -e
+  return 0
+}
+
 mountImageFile() {
   thisArch=$1
   imageFile=$2
@@ -31,11 +123,12 @@ mountImageFile() {
 
   log "Mounting Image File"
 
-  ## Make sure it's not already mounted
-  if [ -n "$(ls -A "$rootfs")" ]; then
+  ## A previous run can leave the image mounted. Unmount before attaching it again.
+  if rootfsBusy "$rootfs"; then
     logErr "$rootfs is not empty. Previous failure to unmount?"
-    umountImageFile "$1" "$2"
-    exit
+    if ! umountImageFile "$1" "$2"; then
+      exit 1
+    fi
   fi
 
   # Mount the image and make the binds required to chroot.
@@ -57,32 +150,6 @@ mountImageFile() {
     log "ERROR: unsupported amount of partitions."
     exit 1
   fi
-}
-
-umountImageFile() {
-  log "un-Mounting"
-  thisArch=$1
-  imageFile=$2
-  rootfs=./work/${thisArch}/rootfs
-
-  rm -rf "$rootfs"/home/border
-  rm -rf "$rootfs"/install-scripts/stageCache/*
-  rm -rf "$rootfs"/install-scripts/logs/*
-  find "$rootfs"/var/log/ -type f -exec rm -rf {} \;
-  rm -rf "$rootfs"/tmp/*
-
-  umount "$rootfs"/etc/resolv.conf
-  umount "$rootfs"/dev/pts || true
-  umount "$rootfs"/dev
-  umount "$rootfs"/sys
-  umount "$rootfs"/proc
-  umount "$rootfs"/tmp
-  umount "$rootfs"/install-scripts/stageCache
-  umount "$rootfs"/run/shm
-  umount "$rootfs"/boot
-  umount "$rootfs"
-
-  kpartx -d "$imageFile"
 }
 
 inflateImage() {

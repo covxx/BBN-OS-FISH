@@ -25,26 +25,45 @@ cd "$(dirname "$0")"
   # Create caching folder hierarchy to work with this architecture.
   setupWorkSpace $thisArch
 
-  # Download the official image
-  log "Downloading official image from internet."
+  # Download the official image once. Re-runs reuse cache/$thisArch.
   myCache=./cache/$thisArch
-  wget -P $myCache/ $imageSource
-  7z e -aoa -o$myCache/ $myCache/"$(basename $zipName)"
-  rm $myCache/"$(basename $zipName)"
+  imageName=$(basename "$zipName" .xz)
+  if [ ! -f "$myCache/$imageName" ]; then
+    log "Downloading official image from internet."
+    wget -c -P "$myCache/" "$imageSource"
+    7z e -aoa -o"$myCache/" "$myCache/$(basename "$zipName")"
+    rm -f "$myCache/$(basename "$zipName")"
+  else
+    log "Using cached Raspberry Pi image $imageName"
+  fi
 
   # Copy image file to work folder add temporary space to it.
-  imageName=$(
-    cd $myCache
-    ls *.img
-    cd ../../
-  )
-  inflateImage $thisArch $myCache/"$imageName"
+  inflateImage $thisArch "$myCache/$imageName"
 
-  # copy ready image from cache to the work dir
-  cp -fv $myCache/"$imageName"-inflated ./work/$thisArch/"$imageName"
+  workImage=./work/$thisArch/"$imageName"
+  progress=$myCache/.bbn-progress
+
+  # Do not replace a still-mounted work image. That corrupts the loop file
+  # and is what leaves rootfs stuck after a failed unmount.
+  if rootfsBusy ./work/$thisArch/rootfs; then
+    logErr "Clearing leftover mount before using $workImage"
+    umountImageFile $thisArch "$workImage" || exit 1
+  fi
+
+  # An incomplete previous build keeps the work image and skips finished stages.
+  # BBN_FRESH=1 recopies the inflated image and runs every stage again.
+  if [ "${BBN_FRESH:-0}" != "1" ] && [ -f "$progress" ] && [ -f "$workImage" ]; then
+    log "Resuming incomplete image (set BBN_FRESH=1 to start over)"
+  else
+    rm -rf "$myCache/stageCache/.bbn-done"
+    rm -f "$progress"
+    log "Copying inflated image into the work directory"
+    cp -fv "$myCache/$imageName-inflated" "$workImage"
+    date -Iseconds > "$progress"
+  fi
 
   # Mount the image and make the binds required to chroot.
-  mountImageFile $thisArch ./work/$thisArch/"$imageName"
+  mountImageFile $thisArch "$workImage"
 
   # Copy the lysmarine and origine OS config files in the mounted rootfs
   addLysmarineScripts $thisArch
@@ -69,16 +88,19 @@ cd "$(dirname "$0")"
     set -x; set -e; cd /install-scripts; export LMBUILD="raspios"; export BBN_KIND="$BBN_KIND"; ls; chmod +x *.sh; ./install.sh 0 2 4 6 8 a; exit
 EOF
 
-  # Unmount
-  umountImageFile $thisArch ./work/$thisArch/"$imageName"
+  # Unmount. Do not delete stageCache: it is a host bind-mount of git clones.
+  pruneImageContents $thisArch
+  umountImageFile $thisArch "$workImage"
 
-  ls -l ./work/$thisArch/"$imageName"
-  wget "https://raw.githubusercontent.com/Drewsif/PiShrink/master/pishrink.sh" -P $myCache/
-  chmod +x "$myCache"/pishrink.sh
-  "$myCache"/pishrink.sh -s ./work/$thisArch/"$imageName" || if [ $? == 11 ]; then
+  ls -l "$workImage"
+  if [ ! -x "$myCache/pishrink.sh" ]; then
+    wget "https://raw.githubusercontent.com/Drewsif/PiShrink/master/pishrink.sh" -O "$myCache/pishrink.sh"
+    chmod +x "$myCache/pishrink.sh"
+  fi
+  "$myCache"/pishrink.sh -s "$workImage" || if [ $? == 11 ]; then
     log "Image already shrunk to smallest size"
   fi
-  ls -l ./work/$thisArch/"$imageName"
+  ls -l "$workImage"
 
   # Renaming the OS and moving it to the release folder.
   if [ "$BBN_KIND" == "LITE" ] ; then
@@ -86,7 +108,8 @@ EOF
   else
     BBN_IMG=lysmarine-bbn-full-bookworm_"${LYSMARINE_VER}"-${thisArch}-${cpuArch}.img
   fi
-  cp -v -l ./work/$thisArch/"$imageName" ./release/$thisArch/"$BBN_IMG"
+  cp -v -l "$workImage" ./release/$thisArch/"$BBN_IMG"
+  rm -f "$progress"
 
   exit 0
 }
