@@ -5,6 +5,15 @@ apt-get install -y -q plymouth plymouth-label libblockdev-mdraid2
 install -v -d "/etc/systemd/system/getty@tty1.service.d"
 install -v -m0644 "$FILE_FOLDER"/skip-prompt.conf "/etc/systemd/system/getty@tty1.service.d/"
 
+# Newer Bookworm still mounts the FAT boot partition at /boot/firmware and
+# symlinks /boot/config.txt. Create the link if a snapshot omits it.
+if [ -f /boot/firmware/config.txt ] && [ ! -e /boot/config.txt ]; then
+  ln -s firmware/config.txt /boot/config.txt
+fi
+if [ -f /boot/firmware/cmdline.txt ] && [ ! -e /boot/cmdline.txt ]; then
+  ln -s firmware/cmdline.txt /boot/cmdline.txt
+fi
+
 # RaspOS
 if [ -f /boot/config.txt ]; then
   if [ "$LMARCH" == 'armhf' ]; then

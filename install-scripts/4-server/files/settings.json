@@ -342,6 +342,70 @@
       ],
       "id": "bbn_heave_sensor",
       "enabled": false
+    },
+    {
+      "pipeElements": [
+        {
+          "type": "providers/simple",
+          "options": {
+            "logging": false,
+            "type": "NMEA0183",
+            "subOptions": {
+              "validateChecksum": true,
+              "type": "serial",
+              "device": "/dev/ttyFISH",
+              "removeNulls": true,
+              "baudrate": 4800,
+              "noDataReceivedTimeout": "15"
+            }
+          }
+        }
+      ],
+      "id": "fish_nmea",
+      "enabled": false
+    },
+    {
+      "pipeElements": [
+        {
+          "type": "providers/simple",
+          "options": {
+            "logging": false,
+            "type": "NMEA0183",
+            "subOptions": {
+              "validateChecksum": true,
+              "type": "serial",
+              "device": "/dev/ttyWIND",
+              "removeNulls": true,
+              "baudrate": 4800,
+              "noDataReceivedTimeout": "15"
+            }
+          }
+        }
+      ],
+      "id": "wind_nmea",
+      "enabled": false
+    },
+    {
+      "pipeElements": [
+        {
+          "type": "providers/simple",
+          "options": {
+            "logging": false,
+            "type": "NMEA0183",
+            "subOptions": {
+              "validateChecksum": true,
+              "type": "tcp",
+              "host": "127.0.0.1",
+              "port": "10117",
+              "suppress0183event": true,
+              "removeNulls": true,
+              "noDataReceivedTimeout": "15"
+            }
+          }
+        }
+      ],
+      "id": "fish_sim",
+      "enabled": false
     }
   ],
   "security": {

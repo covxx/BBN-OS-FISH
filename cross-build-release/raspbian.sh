@@ -8,12 +8,16 @@
 
   thisArch="raspios"
   cpuArch="arm64"
-  zipName="raspios_lite_arm64/images/raspios_lite_arm64-2025-05-13/2025-05-13-raspios-bookworm-arm64-lite.img.xz"
+  # Latest Bookworm (Debian 12) lite, published as oldstable after Trixie took the main folder.
+  # Still a two-partition image: p1 FAT boot, p2 ext4 root. 01-boot.sh follows /boot/config.txt.
+  imageHost="https://downloads.raspberrypi.com"
+  zipName="raspios_oldstable_lite_arm64/images/raspios_oldstable_lite_arm64-2026-06-19/2026-06-18-raspios-bookworm-arm64-lite.img.xz"
   if [ "armhf" == "$MY_CPU_ARCH" ]; then
     cpuArch="armhf"
+    imageHost="https://downloads.raspberrypi.org"
     zipName="raspios_lite_armhf/images/raspios_lite_armhf-2025-05-13/2025-05-13-raspios-bookworm-armhf-lite.img.xz"
   fi
-  imageSource="https://downloads.raspberrypi.org/${zipName}"
+  imageSource="${imageHost}/${zipName}"
 
   checkRoot
 

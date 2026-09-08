@@ -12,7 +12,7 @@
       "Wind Chill": false
     },
     "electrical": {
-      "batterPower0": false
+      "batterPower0": true
     },
     "course data": {
       "dtg": false,
@@ -28,9 +28,9 @@
       "sendNotifications": true
     },
     "depth": {
-      "belowKeel": false,
+      "belowKeel": true,
       "belowKeel_2": false,
-      "belowSurface": false
+      "belowSurface": true
     },
     "propulsion": {
       "economyport": false,
@@ -39,10 +39,10 @@
       "propslipstarboard": false
     },
     "wind": {
-      "groundWind": false,
+      "groundWind": true,
       "groundWindDirection": false,
-      "trueWind": false,
-      "directionTrue": false,
+      "trueWind": true,
+      "directionTrue": true,
       "directionMagnetic2": false,
       "directionMagnetic": false,
       "windShift": false

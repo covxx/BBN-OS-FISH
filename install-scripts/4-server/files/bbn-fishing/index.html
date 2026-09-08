@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Fishing</title>
+  <link rel="stylesheet" href="fishing.css">
+</head>
+<body>
+  <div id="alarm" class="banner">SHALLOW WATER</div>
+  <div class="grid">
+    <section class="card">
+      <div class="label">Depth below surface</div>
+      <div class="depth"><span id="depth">--</span> <span class="unit">ft</span></div>
+      <div class="row"><span>Below transducer</span><span id="xdcr">-- ft</span></div>
+      <div class="row"><span>Water temp</span><span id="temp">-- F</span></div>
+      <div id="depthState" class="hint">Waiting for depth</div>
+    </section>
+    <section class="card side">
+      <div class="label">Position</div>
+      <div class="row"><span>Lat</span><span id="lat">--</span></div>
+      <div class="row"><span>Lon</span><span id="lon">--</span></div>
+      <div class="row"><span>Speed</span><span id="sog">-- kn</span></div>
+      <div id="gpsState" class="hint">Waiting for GPS</div>
+      <div class="row"><span id="windLabel">Wind</span><span id="wind">not connected</span></div>
+    </section>
+  </div>
+  <section class="card">
+    <div class="label">Bottom history, last hour</div>
+    <canvas id="history" width="900" height="160"></canvas>
+  </section>
+  <section class="card">
+    <div class="label">Mark this spot</div>
+    <div class="mark">
+      <input id="note" type="text" maxlength="80" placeholder="Bait, species, structure" autocomplete="off">
+      <button id="mark" type="button">Mark spot</button>
+    </div>
+    <div id="markState" class="hint">Saves a waypoint for OpenCPN.</div>
+  </section>
+  <section class="card">
+    <div class="label">Shallow alarm</div>
+    <div class="row">
+      <span>Sound below</span>
+      <span><input id="alarmFt" type="number" min="1" max="40" step="0.5" value="4" style="width:5rem"> ft</span>
+    </div>
+    <div class="row">
+      <span>Transducer to surface</span>
+      <span><input id="offsetFt" type="number" min="-10" max="20" step="0.1" value="0" style="width:5rem"> ft</span>
+    </div>
+    <div class="mark" style="margin-top:8px">
+      <button id="alarmToggle" class="warn" type="button">Alarm off</button>
+      <button id="saveSet" type="button">Save settings</button>
+    </div>
+    <div class="hint">Leave the alarm off until the transducer offset matches this boat. 4 ft is a starting point, not a draft measurement.</div>
+  </section>
+  <section class="strip">
+    <div class="card"><div class="label">House volts</div><div class="row"><span id="volts">not connected</span></div></div>
+    <div class="card"><div class="label">House amps</div><div class="row"><span id="amps">not connected</span></div></div>
+    <div class="card"><div class="label">Solar watts</div><div class="row"><span id="solar">not connected</span></div></div>
+    <div class="card"><div class="label">Power</div><div class="hint">Victron is the primary path. A shunt fallback stays disabled until wired.</div></div>
+  </section>
+  <script src="fishing.js"></script>
+</body>
+</html>

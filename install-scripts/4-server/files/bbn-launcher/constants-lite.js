@@ -1,6 +1,7 @@
 module.exports = {
   commands1 : [
     {name: 'chart', title: 'Chart', img: 'chart', bg: 'Peru', cmd: 'onlyone', args: ['/usr/bin/opencpn', '-l=error']},
+    {name: 'fishing', title: 'Fishing', img: 'buoy', bg: 'SteelBlue', cmd: 'onlyone', args: ['gnome-www-browser', 'http://127.0.0.1:8765/']},
     {name: 'instruments', title: 'Instruments', img: 'dashboard', bg: 'SeaGreen',  cmd: 'gtk-launch', args: ['boatinstrument']},
     {name: 'pypilot', title: 'PyPilot', img: 'autopilot', bg: 'ForestGreen', cmd: '/opt/Pypilot_webapp/Pypilot_webapp', args: []},
     {name: 'weather', title: 'Weather', img: 'weather', bg: 'RoyalBlue', cmd: 'onlyone', args: ['XyGrib']},

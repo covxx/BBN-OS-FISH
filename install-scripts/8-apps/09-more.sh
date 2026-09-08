@@ -65,6 +65,7 @@ install -v -o 1000 -g 1000 -m 0755 "$FILE_FOLDER"/add-ons/timezone-setup.sh "/ho
 install -v -o 1000 -g 1000 -m 0755 "$FILE_FOLDER"/add-ons/os-settings.sh "/home/user/add-ons/"
 install -v -o 1000 -g 1000 -m 0755 "$FILE_FOLDER"/add-ons/change-password.sh "/home/user/add-ons/"
 install -v -o 1000 -g 1000 -m 0755 "$FILE_FOLDER"/add-ons/maritime-lib-install.sh "/home/user/add-ons/"
+install -v -o 1000 -g 1000 -m 0755 "$FILE_FOLDER"/add-ons/fishing-install.sh "/home/user/add-ons/"
 
 if [ "$BBN_KIND" == "LITE" ] ; then
   exit 0

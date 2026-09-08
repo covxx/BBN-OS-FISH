@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Fishing
+GenericName=Fishing
+Comment=Depth, water temperature, and fishing marks
+Exec=gnome-www-browser http://127.0.0.1:8765/
+Terminal=false
+Icon=applications-science
+Categories=Navigation;
+Keywords=fishing;depth;nmea

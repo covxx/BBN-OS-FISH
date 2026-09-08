@@ -1205,7 +1205,7 @@ ConfigurationY=85
 [Directories]
 S57DataLocation=
 InitChartDir=/home/user/charts
-GPXIODir=
+GPXIODir=/srv/charts
 TCDataDir=
 BasemapDir=/usr/share/opencpn/gshhs/
 WMMDataLocation=/usr/share/opencpn/plugins/wmm_pi/data/

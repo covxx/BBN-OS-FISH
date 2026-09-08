@@ -1,0 +1,128 @@
+:root {
+  color-scheme: dark;
+  --bg: #0b1c24;
+  --card: #12303a;
+  --ink: #e8f4f2;
+  --muted: #9bb8c0;
+  --alarm: #c43c2c;
+  --ok: #7dcea0;
+  --line: #f0c674;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Segoe UI", sans-serif;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding: 12px;
+  gap: 10px;
+}
+
+.banner {
+  display: none;
+  background: var(--alarm);
+  color: white;
+  font-size: 1.6rem;
+  font-weight: 700;
+  text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.banner.show { display: block; }
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 10px;
+}
+
+.card {
+  background: var(--card);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+
+.label {
+  color: var(--muted);
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.depth {
+  font-size: 5.2rem;
+  line-height: 0.95;
+  font-weight: 700;
+}
+
+.unit { font-size: 1.4rem; color: var(--muted); }
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+  font-size: 1.35rem;
+}
+
+.stale { color: var(--alarm); font-weight: 700; }
+
+.side .row { font-size: 1.2rem; }
+
+canvas {
+  width: 100%;
+  height: 160px;
+  background: #0a242c;
+  border-radius: 8px;
+  display: block;
+}
+
+.mark {
+  display: flex;
+  gap: 8px;
+}
+
+input, button {
+  font: inherit;
+  font-size: 1.15rem;
+  border-radius: 8px;
+  border: 0;
+  padding: 12px;
+}
+
+input {
+  flex: 1;
+  background: #0a242c;
+  color: var(--ink);
+}
+
+button {
+  background: #2f6f8f;
+  color: white;
+  min-width: 9rem;
+}
+
+button.warn { background: #8a4b12; }
+
+.hint { color: var(--muted); font-size: 0.95rem; margin-top: 6px; }
+
+.strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+@media (max-width: 800px) {
+  .grid, .strip { grid-template-columns: 1fr; }
+  .depth { font-size: 4.2rem; }
+}
